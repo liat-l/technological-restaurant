@@ -26,12 +26,18 @@ uploaded_file = st.sidebar.file_uploader(
 # 3. אם הועלה קובץ, נטען אותו לזיכרון בזמן אמת (Dynamic Execution)
 if uploaded_file is not None:
     try:
-        # קריאת תוכן הקובץ כמחרוזת טקסט
-        file_contents = uploaded_file.getvalue().decode("utf-8")
-        
-        # יצירת מודול פייתון וירטואלי בזיכרון
-        dynamic_module = types.ModuleType("dynamic_data")
-        exec(file_contents, dynamic_module.__dict__)
+       # בדיקה גמישה: מספיק שיש את משתני הליבה של המסעדה כדי לאשר את הטעינה
+        if hasattr(dynamic_module, "UNIVERSE") and hasattr(dynamic_module, "SETS"):
+            # השלמת ערכי ברירת מחדל במידה ומשתני האופטימיזציות האחרות חסרים בקובץ החדש
+            if not hasattr(dynamic_module, "DIJKSTRA_DATA"):
+                dynamic_module.DIJKSTRA_DATA = getattr(default_data, "DIJKSTRA_DATA", {})
+            if not hasattr(dynamic_module, "MAX_FLOW_DATA"):
+                dynamic_module.MAX_FLOW_DATA = getattr(default_data, "MAX_FLOW_DATA", {})
+                
+            st.session_state["DATA"] = dynamic_module
+            st.sidebar.success("✅ קובץ הנתונים החדש נטען בהצלחה!")
+        else:
+            st.sidebar.error("❌ קובץ לא תקין! חובה להגדיר את UNIVERSE ו-SETS בקובץ.")
         
         # בדיקה שהקובץ מכיל את המשתנים ההכרחיים לאלגוריתמים
         required_vars = ["UNIVERSE", "SETS", "DIJKSTRA_DATA", "MAX_FLOW_DATA"]
