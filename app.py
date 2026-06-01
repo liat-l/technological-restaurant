@@ -8,17 +8,13 @@ st.set_page_config(
     layout="wide"
 )
 
-# הגדרת דפי המערכת - שמות מותאמים לחברת פתרונות אוטומציה
-pages = {
-    "מרכז בקרה": [
-        st.Page("pages/home_page.py", title="🏠 דף הבית ", default=True)
-    ],
-    "פתרונות תפעול ואופטימיזציה": [
-        st.Page("pages/set_cover_page.py", title="📍 Robo-Coverage (תכנון צי)"),
-        st.Page("pages/dijkstra_page.py", title="⚡ Robo-Navigation (ניווט מהיר)"),
-        st.Page("pages/max_flow_page.py", title="🌊 Robo-Flow (סימולטור עומסים)")
-    ]
-}
+# הגדרת רשימת דפים שטוחה וישרה (בלי קטגוריות וכותרות מפרידות)
+pages = [
+    st.Page("pages/home_page.py", title="🏠 דף הבית ומבוא", default=True),
+    st.Page("pages/set_cover_page.py", title="📍 Robo-Coverage (תכנון צי)"),
+    st.Page("pages/dijkstra_page.py", title="⚡ Robo-Navigation (ניווט מהיר)"),
+    st.Page("pages/max_flow_page.py", title="🌊 Robo-Flow (סימולטור עומסים)")
+]
 
 # הפעלת מערכת הניווט החלקה
 pg = st.navigation(pages)
