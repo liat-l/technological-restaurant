@@ -48,7 +48,7 @@ with col_flow:
 
 st.divider()
 
-# --- חלק 3: יתרונות עסקיים (אינטראקטיבי עם Expander) ---
+# --- חלק 3: יתרונות עסקיים ---
 st.subheader("📈 היתרונות העסקיים של פתרונות RoboServe")
 st.write("לחצי על היתרונות כדי לראות כיצד אנו מזניקים את העסק שלך קדימה:")
 
@@ -72,21 +72,15 @@ with st.expander("📊 ניהול גמיש ומבוסס נתונים (Data-Drive
 
 st.divider()
 
-# --- חלק 4: קריאה לפעולה עיצובית ---
+# --- חלק 4: קריאה לפעולה ומעבר ישיר לעמוד הבא ---
 st.markdown("<h4 style='text-align: center;'>🎯 מוכנים לבחון את יעילות המערכת שלכם?</h4>", unsafe_allow_html=True)
-st.write("<p style='text-align: center;'>בחרו במוצר המבוקש מתוך תפריט הניווט הצידי, העלו את קובץ הנתונים שלכם, וצפו באלגוריתמים שלנו מייצרים עבורכם את תוכנית העבודה האופטימלית בלייב!</p>", unsafe_allow_html=True)
+st.write("<p style='text-align: center;'>בחרו במוצר המבוקש מתוך תפריט הניווט הצידי, או לחצו על הכפתור למטה כדי להתחיל בסימולציית פריסת הצי:</p>", unsafe_allow_html=True)
 
-# כפתור שיווקי יפה (סתם ליופי ואינטראקטיביות של האתר)
+# כפתור ניווט נקי ללא בלונים
 st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 if st.button("🚀 לחצו כאן לתחילת הסימולציה הדינמית", use_container_width=True):
-    st.balloons()
+    st.switch_page("pages/set_cover_page.py")
 st.markdown("</div>", unsafe_allow_html=True)
 
 st.divider()
 st.caption("© 2026 RoboServe Solutions Inc. All rights reserved | פותח כפתרון לוגיסטי ותפעולי חכם למסעדות עתידניות.")
-# כפתור שיווקי שמנווט ישירות לעמוד ה-Set Cover
-st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
-if st.button("🚀 לחצו כאן לתחילת הסימולציה הדינמית", use_container_width=True):
-    st.balloons() # חגיגת בלונים
-    st.switch_page("pages/set_cover_page.py") # מעבר אוטומטי לעמוד פריסת הרובוטים
-st.markdown("</div>", unsafe_allow_html=True)
