@@ -16,7 +16,7 @@ pages = {
         st.Page("pages/set_cover_page.py", title="📍 פריסת רובוטים (Set Cover)")
     ]
 }
-}
+
 
 # הפעלת הניווט בין הדפים
 pg = st.navigation(pages)
