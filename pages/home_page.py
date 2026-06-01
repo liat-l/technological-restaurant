@@ -84,3 +84,9 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 st.divider()
 st.caption("© 2026 RoboServe Solutions Inc. All rights reserved | פותח כפתרון לוגיסטי ותפעולי חכם למסעדות עתידניות.")
+# כפתור שיווקי שמנווט ישירות לעמוד ה-Set Cover
+st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
+if st.button("🚀 לחצו כאן לתחילת הסימולציה הדינמית", use_container_width=True):
+    st.balloons() # חגיגת בלונים
+    st.switch_page("pages/set_cover_page.py") # מעבר אוטומטי לעמוד פריסת הרובוטים
+st.markdown("</div>", unsafe_allow_html=True)
