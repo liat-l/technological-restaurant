@@ -1,8 +1,7 @@
 # app.py
 import streamlit as st
-from data.restaurant_data import UNIVERSE, SETS
-from algorithms.set_cover import greedy_set_cover
-
+from restaurant_data import UNIVERSE, SETS
+from set_cover import greedy_set_cover
 # הגדרות עיצוב העמוד
 st.set_page_config(
     page_title="אופטימיזציית מסעדה חכמה",
