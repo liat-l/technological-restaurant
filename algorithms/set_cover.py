@@ -24,8 +24,10 @@ st.divider()
 
 # הצגת מפת המסעדה
 st.subheader("🗺 תכנון פיזי וחלוקת אזורים")
-
-st.image("assets/restaurant_layout.jpeg", caption="מפת חלוקת אזורי השירות האופטימלית במסעדה", use_container_width=True)
+try:
+    st.image("assets/restaurant_layout.jpeg", caption="מפת חלוקת אזורי השירות האופטימלית במסעדה", use_container_width=True)
+except:
+    st.info("💡 טיפ: ודאי שהמפה שמורה בנתיב: assets/restaurant_layout.jpeg")
 
 st.divider()
 
@@ -33,17 +35,17 @@ st.divider()
 if st.button("🚀 הפעל אופטימיזציית פריסת רובוטים", use_container_width=True):
 
     with st.spinner("האלגוריתם החמדני מחשב פריסה הרמטית מינימלית..."):
-        # הרצת האלגוריתם
+        # הרצת האלגוריתם האוטונומי
         selected_sets, covered_tables, iterations = greedy_set_cover(UNIVERSE, SETS)
 
-    st.success(f"🎯 האופטימיזציה הושלמה בהצלחה! ניתן להשיג כיסוי שירות הרמטי ומלא באמצעות 4 רובוטים בלבד.")
+    st.success(f"🎯 האופטימיזציה הושלמה בהצלחה! ניתן להשיג כיסוי שירות הרמטי ומלא באמצעות {len(selected_sets)} רובוטים בלבד.")
 
     # תוצאות מספריות לאחר הריצה
     res_col1, res_col2, res_col3 = st.columns(3)
     with res_col1:
-        st.metric(label="🤖 רובוטים פעילים נדרשים", value="4 רובוטים")
+        st.metric(label="🤖 רובוטים פעילים נדרשים", value=f"{len(selected_sets)} רובוטים")
     with res_col2:
-        st.metric(label="✅ שולחנות מכוסים בפועל", value="16 / 16")
+        st.metric(label="✅ שולחנות מכוסים בפועל", value=f"{len(covered_tables)} / {len(UNIVERSE)}")
     with res_col3:
         st.metric(label="📊 אחוז כיסוי המרחב", value="100% הרמטי")
 
@@ -51,7 +53,7 @@ if st.button("🚀 הפעל אופטימיזציית פריסת רובוטים",
 
     st.subheader("📋 חלוקת השולחנות ותחומי האחריות של צי הרובוטים")
 
-    # מיפוי נקי ומדויק לחלוטין לתוצאות האלגוריתם ללא שום הערות או קופסאות ברירת מחדל
+    # מיפוי נקי עם השמות המדויקים מתוך קובץ הנתונים (מניע את בעיית אי-ההתאמה)
     robot_clean_details = {
         'S3 (מסדרון רביעיות מרכזי)': {
             "title": "🤖 רובוט 1 (S3) - מתחם רביעיות מרכזי (Zone 1)",
@@ -63,19 +65,19 @@ if st.button("🚀 הפעל אופטימיזציית פריסת רובוטים",
             "desc": "מעניק כיסוי שירות ייעודי ובלעדי למתחם השישיות.",
             "tables": "T7, T8, T9, T10"
         },
-        'S8 (רובוט VIP מורחב Zone 4)': {
+        'S8 (רובוט VIP מורחב)': {
             "title": "🤖 רובוט 3 (S8) - מתחם VIP וזוגות (Zone 4)",
             "desc": "מעניק כיסוי שירות מורחב למתחם ה-VIP ולחלק משולחנות הזוגות.",
-            "tables": "T13, T14, T15_VIP, T16_VIP"
+            "tables": "T13, T14, T15, T16"
         },
-        'S6 (מעבר מרכזי-ימין+זוגות)': {
+        'S6 (מסדרון מעבר מרכזי-ימין)': {
             "title": "🤖 רובוט 4 (S6) - מתחם זוגות וגיבוי (Zone 3)",
             "desc": "מעניק כיסוי שירות לשולחנות הזוגות ומשמש כגיבוי דינמי למעבר המרכזי.",
             "tables": "T7, T8, T11, T12"
         }
     }
 
-    # הצגה ממוקדת של 4 הרובוטים הנבחרים עם תחומי האחריות המדויקים שלהם
+    # הצגה דינמית וממוקדת של הרובוטים שנבחרו
     for zone_name in selected_sets:
         if zone_name in robot_clean_details:
             details = robot_clean_details[zone_name]
