@@ -40,24 +40,33 @@ def get_shortest_path(predecessors, target_node):
     path.reverse()
     return path
 
-# --- תצוגת הדשבורד של Streamlit ---
+# --- תצוגת הדשבורד השיווקי והמעוצב של Streamlit ---
 
-st.title("⚡ ניווט רובוטים בזמן אמת (Dijkstra) דינמי")
-st.write("מערכת המידע מחשבת את נתיב התנועה האופטימלי ומזעור מרחקי הנסיעה של הרובוט מהמטבח אל השולחנות על בסיס מטריצת מרחקים.")
+# כותרת ממותגת ונקייה
+st.title("⚡ Robo-Navigation")
+st.subheader("מערכת ניווט דינמית בזמן אמת ומזעור מרחקי תנועה")
+st.write("""
+ברוכים הבאים למודול **Robo-Navigation**. פתרון זה מיישם את אלגוריתם דייקסטרה (Dijkstra) כדי לחשב
+בזמן אמת את **נתיב הנסיעה המהיר והקצר ביותר** עבור הרובוט האוטונומי – מהמטבח ישירות אל שולחנות הסועדים או עמדות הטעינה,
+תוך עקיפת חסימות ואופטימיזציה של זמני ההגשה.
+""")
 
 st.divider()
 
-# רכיב להעלאת קובץ האקסל של מטריצת המרחקים
-uploaded_matrix = st.file_uploader("📊 העלי קובץ אקסל (xlsx) של מטריצת המרחקים במסעדה:", type=["xlsx"])
+# פאנל העלאת קבצים מעוצב ומזמין
+st.subheader("📥 העלאת נתוני רשת ומרחקים")
+uploaded_matrix = st.file_uploader(
+    "📊 העלי את קובץ האקסל (xlsx) המכיל את מטריצת המרחקים של המסעדה:", 
+    type=["xlsx"]
+)
 
 if uploaded_matrix is not None:
     try:
-        # קריאת האקסל והגדרת העמודה הראשונה כאינדקס (שמות השורות)
+        # קריאת האקסל והגדרת העמודה הראשונה כאינדקס
         df = pd.read_excel(uploaded_matrix, index_col=0)
         
-        # בניית מבנה הגרף (Adjacency List) בצורה דינמית מתוך האקסל
+        # בניית מבנה הגרף בצורה דינמית מתוך האקסל
         graph = {}
-        all_nodes = [str(col).strip() for col in df.columns]
         
         for source_node in df.index:
             s_name = str(source_node).strip()
@@ -66,49 +75,74 @@ if uploaded_matrix is not None:
                 t_name = str(target_node).strip()
                 val = df.loc[source_node, target_node]
                 
-                # אם הערך הוא מספר תקין (לא אינסוף ולא ריק) והוא גדול מ-0, נוסיף קשת בגרף
+                # תמיכה בערכים מספריים תקינים הגדולים מ-0
                 if pd.notna(val) and str(val).lower() != 'inf' and float(val) > 0:
                     graph[s_name][t_name] = float(val)
         
-        st.success("✅ מטריצת המרחקים נטענה ונבנתה כגרף בזיכרון בהצלחה!")
+        st.toast("מטריצת המרחקים נקלטה ונבנתה כגרף בזיכרון!", icon="✅")
         
         st.divider()
-        st.subheader("🤖 סימולציית ניווט והזמנת מנה")
+        st.subheader("🤖 סימולציית הזמנה ופקודות ניווט")
         
-        # קביעת קודקוד המקור (המטבח) אוטומטית מתוך הקודקודים הזמינים באקסל
+        # זיהוי אוטומטי של קודקוד המקור (המטבח)
         possible_sources = [node for node in graph.keys() if "מטבח" in node or "kitchen" in node.lower() or node == "0"]
         start_node = possible_sources[0] if possible_sources else list(graph.keys())[0]
         
-        # סינון רשימת היעדים (כל הקודקודים שהם לא המטבח בעצמו)
+        # סינון רשימת היעדים
         destinations = [node for node in graph.keys() if node != start_node]
         
         if destinations:
-            # תיבת בחירה דינמית שמתעדכנת לבד לפי השולחנות שיש באקסל שלך
-            selected_target = st.selectbox("🍽️ בחרי את שולחן היעד למשלוח המנה מהמטבח:", sorted(destinations))
+            # תיבת בחירה דינמית ומעוצבת לשולחן היעד
+            selected_target = st.selectbox(
+                "🍽️ בחרי את קודקוד היעד למשלוח המנה או לביצוע פקודת עבודה:", 
+                sorted(destinations)
+            )
             
-            # הרצת אלגוריתם דייקסטרה על הגרף הדינמי מהאקסל
+            # הרצת אלגוריתם דייקסטרה
             distances, predecessors = run_dijkstra(graph, start_node)
             
-            # שליפת המרחק והמסלול המשוחזר
+            # שליפת מרחק ומסלול
             final_distance = distances.get(selected_target, float('inf'))
             final_path = get_shortest_path(predecessors, selected_target)
             
+            st.write("---")
+            
             if final_distance != float('inf'):
-                # הצגת התוצאות במטריקות מעוצבות ונקיות
+                # הצגת תוצאות הניווט בכרטיסי מדדים אחידים
                 res_col1, res_col2 = st.columns(2)
                 with res_col1:
-                    st.metric(label="📏 סך מרחק הנסיעה האופטימלי:", value=f"{final_distance} מטרים")
+                    st.metric(label="📏 מרחק נסיעה כולל ואופטימלי", value=f"{final_distance} מטרים")
                 with res_col2:
-                    # הפיכת רשימת המסלול לחצים יפים (למשל: מטבח ➔ T1 ➔ T2)
-                    path_visual = " ➔ ".join(final_path)
-                    st.info(f"📍 **נתיב הניווט הנבחר:**\n`{path_visual}`")
+                    st.metric(label="⏱️ סטטוס נתיב תנועה", value="🟢 פתוח ופנוי")
+                
+                # הצגת נתיב החצים בתוך תיבת מידע יוקרתית
+                path_visual = " ➔ ".join(final_path)
+                st.info(f"📍 **נתיב הניווט המשוחזר עבור הרובוט:**\n\n`{path_visual}`")
             else:
-                st.error(f"❌ לא נמצא מסלול תנועה פתוח בין {start_node} לבין שולחן {selected_target}. ודאי שאין חסימה ברשת.")
+                st.error(f"❌ לא נמצא מסלול תנועה פתוח בין {start_node} לבין שולחן {selected_target}. ודאי שאין חסימה פיזית ברשת המסעדה.")
         else:
             st.warning("⚠️ הקובץ שהועלה מכיל רק קודקוד אחד, לא ניתן לחשב מסלולי ניווט.")
             
     except Exception as e:
         st.error(f"❌ שגיאה בעיבוד מטריצת המרחקים מהאקסל: {str(e)}")
 else:
-    # הודעת הסבר שמופיעה רק כשהמסך ריק ומחכה לקובץ (ונעלמת אוטומטית ברגע שהקובץ עולה!)
-    st.info(f"💡 אנא העלי קובץ אקסל (xlsx) המכיל את מטריצת המרחקים של המסעדה כדי להפעיל את סימולציית דייקסטרה.")
+    # הודעת הדרכה מעוצבת ומזמינה כשהמסך ריק ומחכה לקובץ
+    st.info("""
+    👋 **מוכנים להפעיל את מערכת הניווט?**
+    
+    אנא העלי קובץ אקסל (`.xlsx`) המכיל את מטריצת המרחקים והחיבורים בין נקודות השירות השונות במסעדה. 
+    מיד עם הטענת הקובץ, ייפתח פאנל השליטה לבחירת יעדי ההגשה והצגת נתיבי הנסיעה האופטימליים.
+    """)
+    
+    # הצגת דוגמה למבנה שהמשתמש יבין מה להעלות
+    with st.expander("💡 לחצי כאן לצפייה במבנה מטריצת המרחקים הנדרשת (דוגמה)"):
+        example_matrix = pd.DataFrame({
+            "קודקוד": ["מטבח", "T1", "T2", "עמדת טעינה"],
+            "מטבח": [0, 10, 15, "inf"],
+            "T1": [10, 0, 5, "inf"],
+            "T2": [15, 5, 0, 8],
+            "עמדת טעינה": ["inf", "inf", 8, 0]
+        })
+        example_matrix.set_index("קודקוד", inplace=True)
+        st.table(example_matrix)
+        st.caption("הערה: הערך inf (Infinity) מייצג מצב שבו אין חיבור ישיר פתוח בין שני הקודקודים הללו ברשת.")
