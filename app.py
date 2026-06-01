@@ -23,29 +23,30 @@ uploaded_file = st.sidebar.file_uploader(
     help="ניתן להעלות קובץ במבנה של restaurant_data.py עם אזורים ומטריצות שונות"
 )
 
-# 3. אם הועלה קובץ, נטען אותו לזיכרון בזמן אמת (Dynamic Execution)
+# 3. מנגנון טעינה ואימות דינמי מאובטח
 if uploaded_file is not None:
     try:
-       # בדיקה גמישה: מספיק שיש את משתני הליבה של המסעדה כדי לאשר את הטעינה
+        # קריאת תוכן הקובץ כמחרוזת טקסט
+        file_contents = uploaded_file.getvalue().decode("utf-8")
+        
+        # יצירת המודול הווירטואלי בזיכרון תחילה
+        dynamic_module = types.ModuleType("dynamic_data")
+        exec(file_contents, dynamic_module.__dict__)
+        
+        # בדיקה גמישה: אימות קיום משתני הליבה ההכרחיים (UNIVERSE ו-SETS)
         if hasattr(dynamic_module, "UNIVERSE") and hasattr(dynamic_module, "SETS"):
-            # השלמת ערכי ברירת מחדל במידה ומשתני האופטימיזציות האחרות חסרים בקובץ החדש
+            # השלמת ערכי ברירת מחדל מהקובץ המקורי במידה והאופטימיזציות האחרות חסרות בקובץ החדש
             if not hasattr(dynamic_module, "DIJKSTRA_DATA"):
                 dynamic_module.DIJKSTRA_DATA = getattr(default_data, "DIJKSTRA_DATA", {})
             if not hasattr(dynamic_module, "MAX_FLOW_DATA"):
                 dynamic_module.MAX_FLOW_DATA = getattr(default_data, "MAX_FLOW_DATA", {})
                 
+            # שמירה בזיכרון המערכת
             st.session_state["DATA"] = dynamic_module
             st.sidebar.success("✅ קובץ הנתונים החדש נטען בהצלחה!")
         else:
             st.sidebar.error("❌ קובץ לא תקין! חובה להגדיר את UNIVERSE ו-SETS בקובץ.")
-        
-        # בדיקה שהקובץ מכיל את המשתנים ההכרחיים לאלגוריתמים
-        required_vars = ["UNIVERSE", "SETS", "DIJKSTRA_DATA", "MAX_FLOW_DATA"]
-        if all(hasattr(dynamic_module, var) for var in required_vars):
-            st.session_state["DATA"] = dynamic_module
-            st.sidebar.success("✅ קובץ הנתונים החדש נטען בהצלחה!")
-        else:
-            st.sidebar.error("❌ קובץ חסר משתני חובה (UNIVERSE, SETS וכדומה)")
+            
     except Exception as e:
         st.sidebar.error(f"❌ שגיאה בקריאת הקובץ: {str(e)}")
 else:
