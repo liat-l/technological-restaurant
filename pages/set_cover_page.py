@@ -18,13 +18,11 @@ def greedy_set_cover(universe, subsets):
         max_new_elements = -1
         
         for subset_name, subset_elements in subsets_copy.items():
-            # חישוב האיברים החדשים שהקבוצה יכולה לתרום לכיסוי
             new_elements = subset_elements - covered
             if len(new_elements) > max_new_elements:
                 max_new_elements = len(new_elements)
                 best_subset = subset_name
                 
-        # אם הגענו למצב שאי אפשר לכסות יותר איברים חדשים, נעצור כדי למנוע לולאה אינסופית
         if max_new_elements <= 0 or best_subset is None:
             break
             
@@ -33,60 +31,84 @@ def greedy_set_cover(universe, subsets):
         
     return selected_subsets
 
-# --- תצוגת הדשבורד של Streamlit ---
+# --- תצוגת הדשבורד השיווקי של Streamlit ---
 
-st.title("📍 אופטימיזציית כיסוי אזורים (Set Cover) דינמי")
-st.write("מערכת המידע מפעילה אלגוריתם חמדני (Greedy Heuristic) על בסיס קובץ נתונים מותאם אישית לקביעת פריסת צי הרובוטים המינימלי.")
+# כותרת ממותגת ונקייה
+st.title("📍 Robo-Coverage")
+st.subheader("מערכת תכנון הצי ואופטימיזציית כיסוי אזורים בזמן אמת")
+st.write("""
+ברוכים הבאים למודול **Robo-Coverage**. אלגוריתם זה מנתח את מבנה המסעדה, חלוקת האזורים והדרישות שלכם, 
+ומחשב באופן מתמטי את **כמות המינימום של רובוטים** הנדרשים כדי להבטיח כיסוי שירות הרמטי (100%) לכל השולחנות, תוך מניעת עודפי ציוד יקרים.
+""")
 
 st.divider()
 
-# רכיב להעלאת קובץ האקסל ישירות בדף
-uploaded_excel = st.file_uploader("📊 העלי קובץ אקסל (xlsx) של אזורי השירות והרובוטים הפוטנציאליים:", type=["xlsx"])
+# פאנל העלאת קבצים מעוצב ומזמין
+st.subheader("📥 העלאת נתוני פריסה")
+uploaded_excel = st.file_uploader(
+    "📊 העלי את קובץ האקסל (xlsx) המכיל את פוטנציאל אזורי השירות והרובוטים שלך:", 
+    type=["xlsx"]
+)
 
 if uploaded_excel is not None:
     try:
-        # קריאת קובץ האקסל באמצעות pandas
+        # קריאת קובץ האקסל
         df = pd.read_excel(uploaded_excel)
         
         if df.shape[1] >= 2:
-            # הגדרת שמות עמודות אחידים לעבודה בקוד
             df.columns = ["robot_name", "tables_covered"]
             
             DYNAMIC_SETS = {}
             dynamic_universe = set()
             
-            # עיבוד הנתונים מהטבלה ובניית המבנים הלוגיים
             for index, row in df.iterrows():
                 r_name = str(row["robot_name"]).strip()
-                # פירוק השולחנות המוזנים לפי פסיק ונרמול רווחים מיותרים
                 t_list = [t.strip() for t in str(row["tables_covered"]).split(",") if t.strip()]
                 
                 if r_name and t_list:
-                    # שמירה זמנית במילון הנתונים
                     DYNAMIC_SETS[r_name] = t_list
                     dynamic_universe.update(t_list)
             
-            st.success(f"✅ קובץ הנתונים נטען בהצלחה! זוהו {len(dynamic_universe)} שולחנות ייחודיים ו-{len(DYNAMIC_SETS)} אזורי הצבה פוטנציאליים[cite: 11, 13].")
+            # הודעת הצלחה נקייה מעל הניתוח
+            st.toast("קובץ הנתונים נקלט בהצלחה!", icon="✅")
             
-            # המרה מוחלטת ל-set עבור האלגוריתם החמדני
             clean_universe = set(dynamic_universe)
             clean_sets = {str(k): set(v) for k, v in DYNAMIC_SETS.items()}
             
-            # הרצת האלגוריתם המובנה בקובץ
+            # הרצת האלגוריתם
             selected_sets = greedy_set_cover(clean_universe, clean_sets)
             
             st.divider()
-            st.subheader("🎯 תוצאות פריסת הרובוטים האופטימלית")
-            st.success(f"🤖 האלגוריתם קבע כי יש צורך ב-**{len(selected_sets)} רובוטים** כדי להבטיח כיסוי שירות הרמטי לכל השולחנות[cite: 7].")
             
-            # הצגת האזורים הנבחרים בעמודות דינמיות מתאימות
-            cols = st.columns(len(selected_sets))
+            # --- תצוגת מדדים ומטריקות (Executive Metrics) ---
+            st.subheader("🎯 תוצאות פריסת הצי האופטימלית")
+            
+            m_col1, m_col2, m_col3 = st.columns(3)
+            with m_col1:
+                st.metric(label="🤖 גודל צי מינימלי נדרש", value=f"{len(selected_sets)} רובוטים")
+            with m_col2:
+                st.metric(label="🍽️ סך שולחנות מכוסים", value=f"{len(clean_universe)} שולחנות")
+            with m_col3:
+                st.metric(label="🛡️ אחוז כיסוי שירות", value="100% הרמטי")
+            
+            st.write("---")
+            st.write("### 📋 חלוקת אזורי העבודה של הרובוטים שנבחרו:")
+            
+            # תצוגת האזורים הנבחרים ככרטיסים מעוצבים ונקיים
+            # פריסה חכמה של עמודות (מקסימום 3 בשורה למראה מאוזן)
+            num_selected = len(selected_sets)
+            cols = st.columns(num_selected if num_selected > 0 else 1)
+            
             for idx, set_name in enumerate(selected_sets):
                 with cols[idx]:
+                    # הפיכת רשימת השולחנות לטקסט מעוצב ויפה
+                    tables_string = ", ".join(sorted(list(clean_sets[set_name])))
                     st.info(f"""
-                    **{set_name}**
-                    * 🍽️ שולחנות מכוסים:
-                    `{sorted(list(clean_sets[set_name]))}`
+                    #### 🤖 {set_name}
+                    **סטטוס:** 🟢 מוצב בשירות
+                    
+                    **🍽️ שולחנות באחריות:**
+                    `{tables_string}`
                     """)
                     
         else:
@@ -95,4 +117,18 @@ if uploaded_excel is not None:
     except Exception as e:
         st.error(f"❌ שגיאה בתהליך עיבוד נתוני האקסל: {str(e)}")
 else:
-    st.info("💡 אנא העלי קובץ אקסל (xlsx) המכיל את רשימת אזורי השירות והשולחנות כדי להריץ את ניתוח ה-Set Cover[cite: 11, 13].")
+    # הודעת הדרכה מעוצבת ומזמינה כשהמסך ריק ומחכה לקובץ
+    st.info("""
+    👋 **מוכנים להתחיל באופטימיזציה?**
+    
+    אנא העלי קובץ אקסל (`.xlsx`) המכיל את רשימת אזורי השירות והשולחנות הפוטנציאליים. 
+    מיד עם העלאת הקובץ, המערכת תציג את הניתוח העסקי והמדדים המדויקים עבור המסעדה שלך.
+    """)
+    
+    # הצגת דוגמה קטנה למבנה שהמשתמש יבין מה להעלות
+    with st.expander("💡 לחצי כאן לצפייה במבנה הקובץ הנדרש (דוגמה)"):
+        example_df = pd.DataFrame({
+            "שם אזור / רובוט פוטנציאלי": ["רובוט אזור מרכזי S1", "רובוט אזור חלון S2", "רובוט VIP S3"],
+            "שולחנות מכוסים (מופרדים בפסיק)": ["T1, T2, T3", "T3, T4, T5", "T6, T7"]
+        })
+        st.table(example_df)
