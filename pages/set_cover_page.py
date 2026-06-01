@@ -17,7 +17,7 @@ uploaded_excel = st.file_uploader("📊 העלי קובץ אקסל (xlsx) של �
 
 if uploaded_excel is not None:
     try:
-        # קריאת קובץ האקסל
+        # קריאת קובץ האקסל באמצעות pandas
         df = pd.read_excel(uploaded_excel)
         
         if df.shape[1] >= 2:
@@ -30,21 +30,21 @@ if uploaded_excel is not None:
             # עיבוד הנתונים מהטבלה ובניית המבנים הלוגיים
             for index, row in df.iterrows():
                 r_name = str(row["robot_name"]).strip()
-                # פירוק השולחנות המוזנים לפי פסיק ונרמול רווחים
+                # פירוק השולחנות המוזנים לפי פסיק ונרמול רווחים מיותרים
                 t_list = [t.strip() for t in str(row["tables_covered"]).split(",") if t.strip()]
                 
                 if r_name and t_list:
-                    # המרה חובה ל-set (קבוצה) כדי שהאלגוריתם החמדני לא יתרסק או יחזיר תוצאה חלקית
-                    DYNAMIC_SETS[r_name] = set(t_list)
+                    # שמירה זמנית במילון הנתונים
+                    DYNAMIC_SETS[r_name] = t_list
                     dynamic_universe.update(t_list)
             
             st.success(f"✅ קובץ הנתונים נטען בהצלחה! זוהו {len(dynamic_universe)} שולחנות ייחודיים ו-{len(DYNAMIC_SETS)} אזורי הצבה פוטנציאליים.")
             
-            # --- התיקון הקריטי: שליחת קבוצות (set) נקיות ומנוקות לאלגוריתם שלכן ---
+            # --- המרה מוחלטת ל-set עבור האלגוריתם החמדני למניעת קריסות ותוצאות חלקיות ---
             clean_universe = set(dynamic_universe)
             clean_sets = {str(k): set(v) for k, v in DYNAMIC_SETS.items()}
             
-            # הרצת האלגוריתם החמדני
+            # הרצת האלגוריתם החמדני שלכן
             selected_sets = greedy_set_cover(clean_universe, clean_sets)
             
             st.divider()
@@ -58,7 +58,7 @@ if uploaded_excel is not None:
                     st.info(f"""
                     **{set_name}**
                     * 🍽️ שולחנות מכוסים:
-                    `{sorted(list(DYNAMIC_SETS[set_name]))}`
+                    `{sorted(list(clean_sets[set_name]))}`
                     """)
                     
         else:
@@ -68,12 +68,3 @@ if uploaded_excel is not None:
         st.error(f"❌ שגיאה בתהליך עיבוד נתוני האקסל: {str(e)}")
 else:
     st.info("💡 אנא העלי קובץ אקסל (xlsx) המכיל את רשימת אזורי השירות והשולחנות כדי להריץ את ניתוח ה-Set Cover.")
-
-st.divider()
-
-# הצגת מפת חלוקת אזורי השירות המקורית מתוך הדו"ח
-st.subheader("🗺️ תוכנית פריסת האזורים המקורית במסעדה")
-try:
-    st.image("pictures/picture2.png", caption="איור 2: חלוקת המסעדה לאזורי שירות (SETS) ותחנות עבודה [cite: 71, 72]", use_container_width=True)
-except Exception:
-    st.caption("ℹ️ מפת המסעדה (picture2.png) זמינה לצפייה מתוך קובץ המשאבים הגרפיים של המערכת[cite: 71].")
