@@ -79,8 +79,6 @@ if uploaded_matrix is not None:
                 if pd.notna(val) and str(val).lower() != 'inf' and float(val) > 0:
                     graph[s_name][t_name] = float(val)
         
-        st.toast("מטריצת המרחקים נקלטה ונבנתה כגרף בזיכרון!", icon="✅")
-        
         st.divider()
         st.subheader("🤖 סימולציית הזמנה ופקודות ניווט")
         
@@ -108,7 +106,7 @@ if uploaded_matrix is not None:
             st.write("---")
             
             if final_distance != float('inf'):
-                # הצגת המדד המרכזי בעמודה אחת ממורכזת ונקייה (ללא תיבת הסטטוס)
+                # הצגת המדד המרכזי בעמודה אחת ממורכזת ונקייה
                 st.metric(label="📏 מרחק נסיעה כולל ואופטימלי", value=f"{final_distance} מטרים")
                 
                 # הצגת נתיב החצים בתוך תיבת מידע יוקרתית
