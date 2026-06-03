@@ -1,8 +1,6 @@
-# pages/max_flow_page.py
 import streamlit as st
 import pandas as pd
 
-# --- כותרת ראשית שיווקית וממותגת ---
 st.title("🌊 Robo-Flow Simulator")
 st.subheader("סימולטור זרימה מקסימלית בזמן אמת וניתוח צווארי בקבוק")
 st.write("""
@@ -13,7 +11,6 @@ st.write("""
 
 st.divider()
 
-# פאנל העלאת קבצים מעוצב ומזמין
 st.subheader("📥 העלאת נתוני קיבולת ורשת")
 uploaded_flow = st.file_uploader(
     "📊 העלי את קובץ האקסל (xlsx) המכיל את נתוני הקיבולות של אזורי השירות והרובוטים:", 
