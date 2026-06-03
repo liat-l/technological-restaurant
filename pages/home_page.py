@@ -1,13 +1,10 @@
-# pages/home_page.py
 import streamlit as st
 
-# --- כותרת ראשית שיווקית וממותגת ---
 st.markdown("<h1 style='text-align: center; color: #1E3A8A;'>🤖 RoboServe Solutions</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center; color: #4B5563;'>הדור הבא של אוטומציה ולוגיסטיקה חכמה בענף המסעדנות והאירועים</h3>", unsafe_allow_html=True)
 
 st.divider()
 
-# --- חלק 1: פסקת פתיחה ומיתוג החברה ---
 st.subheader("🚀 מהפכת האוטומציה כבר כאן")
 st.write("""
 חברת **RoboServe Solutions** היא המובילה הטכנולוגית בפיתוח, שיווק והטמעת מערכות רובוטיות אוטונומיות למסעדות, אולמות אירועים ומתחמי קולינריה חכמים.
@@ -16,7 +13,6 @@ st.write("""
 
 st.divider()
 
-# --- חלק 2: שלושת מוצרי הליבה של החברה ---
 st.subheader("🛠️ פתרונות הטכנולוגיה והאופטימיזציה שלנו")
 st.write("הפתרונות שלנו אינם מבוססים על אינטואיציה – אנו מיישמים אלגוריתמים מתמטיים מורכבים המותאמים אישית למבנה העסק שלך:")
 
@@ -48,7 +44,6 @@ with col_flow:
 
 st.divider()
 
-# --- חלק 3: יתרונות עסקיים ---
 st.subheader("📈 היתרונות העסקיים של פתרונות RoboServe")
 st.write("לחצי על היתרונות כדי לראות כיצד אנו מזניקים את העסק שלך קדימה:")
 
