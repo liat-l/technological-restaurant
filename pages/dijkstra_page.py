@@ -1,9 +1,7 @@
-# pages/dijkstra_page.py
 import streamlit as st
 import pandas as pd
 import heapq
 
-# --- מימוש ישיר של אלגוריתם דייקסטרה (Dijkstra) בתוך הדף למניעת שגיאות ייבוא ---
 def run_dijkstra(graph, start_node):
     """
     אלגוריתם דייקסטרה למציאת המסלול הקצר ביותר מקודקוד מקור לכל שאר הקודקודים בגרף.
@@ -40,9 +38,7 @@ def get_shortest_path(predecessors, target_node):
     path.reverse()
     return path
 
-# --- תצוגת הדשבורד השיווקי והמעוצב של Streamlit ---
 
-# כותרת ממותגת ונקייה
 st.title("⚡ Robo-Navigation")
 st.subheader("מערכת ניווט דינמית בזמן אמת ומזעור מרחקי תנועה")
 st.write("""
@@ -53,7 +49,6 @@ st.write("""
 
 st.divider()
 
-# פאנל העלאת קבצים מעוצב ומזמין
 st.subheader("📥 העלאת נתוני רשת ומרחקים")
 uploaded_matrix = st.file_uploader(
     "📊 העלי את קובץ האקסל (xlsx) המכיל את מטריצת המרחקים של המסעדה:", 
