@@ -1,20 +1,16 @@
 import streamlit as st
+st.set_page_config(
+    page_title="RoboServe Solutions",
+    layout="wide"
+)
+
 st.markdown("""
 <style>
-[data-testid="stAppViewContainer"] {
-    direction: rtl;
-}
-
 [data-testid="stMarkdownContainer"] {
     text-align: right;
 }
-
-h1, h2, h3, h4, h5, h6, p {
-    text-align: right !important;
-}
 </style>
 """, unsafe_allow_html=True)
-
 pages = [
     st.Page("pages/home_page.py", title="🏠 דף הבית ומבוא", default=True),
     st.Page("pages/set_cover_page.py", title="📍 Robo-Coverage (תכנון צי)"),
