@@ -54,7 +54,7 @@ def greedy_set_cover(restaurant_tables, robot_coverage):
 st.title("📍 Robo-Coverage")
 st.subheader("מערכת תכנון הצי ואופטימיזציית כיסוי אזורים בזמן אמת")
 
-st.write("""
+st.markdown("""
  **Robo-Coverage**ברוכים הבאים למודול
 
 המערכת מממשת את אלגוריתם הכיסוי החמדני (Greedy Set Cover)
