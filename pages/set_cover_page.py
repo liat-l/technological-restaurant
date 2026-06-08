@@ -3,33 +3,50 @@ import streamlit as st
 import pandas as pd
 
 # --- מימוש ישיר של אלגוריתם Set Cover החמדני בתוך הדף למניעת שגיאות ייבוא ---
-def greedy_set_cover(universe, subsets):
+
+def greedy_set_cover(restaurant_tables, robot_coverage):
     """
     אלגוריתם חמדני לכיסוי קבוצה (Set Cover Heuristic).
     בכל שלב נבחרת הקבוצה שמכסה את מספר האלמנטים החדשים הגדול ביותר.
     """
-    elements = set(universe)
-    subsets_copy = {k: set(v) for k, v in subsets.items()}
-    covered = set()
-    selected_subsets = []
 
-    while covered != elements:
-        best_subset = None
-        max_new_elements = -1
-        
-        for subset_name, subset_elements in subsets_copy.items():
-            new_elements = subset_elements - covered
-            if len(new_elements) > max_new_elements:
-                max_new_elements = len(new_elements)
-                best_subset = subset_name
-                
-        if max_new_elements <= 0 or best_subset is None:
+    all_tables = set(restaurant_tables)
+
+    robot_coverage_copy = {
+        k: set(v)
+        for k, v in robot_coverage.items()
+    }
+
+    covered_tables = set()
+
+    selected_robots = []
+
+    while covered_tables != all_tables:
+
+        best_robot = None
+
+        max_new_tables = -1
+
+        for robot_name, robot_tables in robot_coverage_copy.items():
+
+            new_tables_covered = robot_tables - covered_tables
+
+            if len(new_tables_covered) > max_new_tables:
+
+                max_new_tables = len(new_tables_covered)
+
+                best_robot = robot_name
+
+        if max_new_tables <= 0 or best_robot is None:
             break
-            
-        selected_subsets.append(best_subset)
-        covered.update(subsets_copy[best_subset])
-        
-    return selected_subsets
+
+        selected_robots.append(best_robot)
+
+        covered_tables.update(
+            robot_coverage_copy[best_robot]
+        )
+
+    return selected_robots
 
 # --- תצוגת הדשבורד השיווקי של Streamlit ---
 
@@ -37,7 +54,8 @@ def greedy_set_cover(universe, subsets):
 st.title("📍 Robo-Coverage")
 st.subheader("מערכת תכנון הצי ואופטימיזציית כיסוי אזורים בזמן אמת")
 st.write("""
-ברוכים הבאים למודול **Robo-Coverage**. אלגוריתם זה מנתח את מבנה המסעדה, חלוקת האזורים והדרישות שלכם, 
+ **Robo-Coverage** ברוכים הבאים למודול
+אלגוריתם זה מנתח את מבנה המסעדה, חלוקת האזורים והדרישות שלכם
 ומחשב באופן מתמטי את **כמות המינימום של רובוטים** הנדרשים כדי להבטיח כיסוי שירות הרמטי (100%) לכל השולחנות, תוך מניעת עודפי ציוד יקרים.
 """)
 
