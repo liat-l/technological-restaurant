@@ -51,7 +51,7 @@ def greedy_set_cover(restaurant_tables, robot_coverage):
 # --- תצוגת הדשבורד השיווקי של Streamlit ---
 
 # כותרת ממותגת ונקייה
-st.title("📍 Robo-Coverage")
+st.title("🚨 TEST TEST TEST")
 st.subheader("מערכת תכנון הצי ואופטימיזציית כיסוי אזורים בזמן אמת")
 
 st.markdown("""
