@@ -1,5 +1,5 @@
 import streamlit as st
- st.markdown("""
+st.markdown("""
 <style>
 section.main > div {
     direction: rtl;
