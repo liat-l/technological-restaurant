@@ -159,6 +159,4 @@ else:
         })
         st.table(example_df)
 
-st.markdown("""
-</div>
-""", unsafe_allow_html=True)
+
