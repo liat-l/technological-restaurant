@@ -1,6 +1,65 @@
 import streamlit as st
 import pandas as pd
 
+def calculate_max_flow(kitchen_capacity, robot_data, robots_status):
+    """
+    אלגוריתם זרימה מקסימלית למסעדה.
+
+    kitchen_capacity - קיבולת המטבח
+    robot_data - נתוני האזורים והרובוטים
+    robots_status - סטטוס הרובוטים
+    """
+
+    total_flow = 0
+    bottlenecks = []
+    zone_results = {}
+
+    for zone, caps in robot_data.items():
+
+        if robots_status[zone]:
+            robot_capacity = 0
+            status_text = "🔴 מושבת / תקלה תפעולית"
+        else:
+            robot_capacity = caps["קיבולת_רובוט"]
+            status_text = "🟢 פעיל בשירות"
+
+        tables_capacity = caps["שולחנות"]
+
+        # Max Flow לפי החוליה החלשה במסלול
+        zone_flow = min(
+            robot_capacity,
+            tables_capacity
+        )
+
+        total_flow += zone_flow
+
+        zone_results[zone] = {
+            "flow": zone_flow,
+            "robot_capacity": robot_capacity,
+            "tables_capacity": tables_capacity,
+            "status": status_text
+        }
+
+        if tables_capacity < robot_capacity and not robots_status[zone]:
+            bottlenecks.append(
+                f"**{zone}** (קיבולת שולחנות: {tables_capacity} מול קיבולת רובוט: {robot_capacity})"
+            )
+
+        elif robots_status[zone]:
+            bottlenecks.append(
+                f"**{zone}** (הרובוט הושבת באופן יזום)"
+            )
+
+    final_flow = min(
+        kitchen_capacity,
+        total_flow
+    )
+
+    return final_flow, total_flow, bottlenecks, zone_results
+
+
+
+
 st.title("🌊 Robo-Flow Simulator")
 st.subheader("סימולטור זרימה מקסימלית בזמן אמת וניתוח צווארי בקבוק")
 st.write("""
@@ -65,42 +124,22 @@ if uploaded_flow is not None:
             
             # --- הרצת אלגוריתם הזרימה הדינמי ---
             st.subheader("📋 פירוט תזרים ההזמנות הנוכחי ברשת")
+            final_flow, total_max_flow, bottlenecks, zone_results = calculate_max_flow(
+                kitchen_cap,
+                DYNAMIC_ROBOTS,
+                robots_status
+            )
             
-            total_max_flow = 0
-            bottlenecks = []
+            for zone, data in zone_results.items():
             
-            # מעבר על כל אזור וחישוב הזרימה האופטימלית בהתאם לסטטוס ותקלות
-            for zone, caps in DYNAMIC_ROBOTS.items():
-                if robots_status[zone]:
-                    r_cap = 0
-                    status_text = "🔴 מושבת / תקלה תפעולית"
-                else:
-                    r_cap = caps["קיבולת_רובוט"]
-                    status_text = "🟢 פעיל בשירות"
-                    
-                t_cap = caps["שולחנות"]
-                
-                # חוק המינימום של האלגוריתם
-                zone_flow = min(r_cap, t_cap)
-                total_max_flow += zone_flow
-                
-                # בדיקת צוואר בקבוק מקומית באזור פעיל
-                if t_cap < r_cap and not robots_status[zone]:
-                    bottlenecks.append(f"**{zone}** (קיבולת שולחנות: {t_cap} מול קיבולת רובוט: {r_cap})")
-                elif robots_status[zone]:
-                    bottlenecks.append(f"**{zone}** (הרובוט הושבת באופן יזום)")
-                
-                # הצגת המצב התפעולי של האזור בכרטיס נקי
                 st.info(f"""
-                📍 **אזור שירות: {zone}** | סטטוס: {status_text}
-                * 🤖 קיבולת הובלה של הרובוט: `{r_cap}` הזמנות
-                * 🍽️ קיבולת ספיגה לפי שולחנות: `{t_cap}` הזמנות
-                * 🌊 **זרימת הזמנות בפועל באזור:** **{zone_flow} הזמנות**
+                📍 **אזור שירות: {zone}** | סטטוס: {data['status']}
+                * 🤖 קיבולת הובלה של הרובוט: `{data['robot_capacity']}` הזמנות
+                * 🍽️ קיבולת ספיגה לפי שולחנות: `{data['tables_capacity']}` הזמנות
+                * 🌊 **זרימת הזמנות בפועל באזור:** **{data['flow']} הזמנות**
                 """)
             
-            # אילוץ עליון של הרשת: המטבח חוסם אם הקיבולת הכוללת גדולה ממנו
-            final_flow = min(kitchen_cap, total_max_flow)
-            
+
             st.divider()
             st.subheader("🎯 סיכום תוצאות המודל")
             
