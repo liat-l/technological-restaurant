@@ -1,5 +1,12 @@
 import streamlit as st
-
+ st.markdown("""
+<style>
+section.main > div {
+    direction: rtl;
+    text-align: right;
+}
+</style>
+""", unsafe_allow_html=True)
 st.set_page_config(
     page_title="RoboServe Solutions",
     page_icon="🤖",
