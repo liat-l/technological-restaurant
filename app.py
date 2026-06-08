@@ -1,17 +1,19 @@
 import streamlit as st
 st.markdown("""
 <style>
-section.main > div {
+[data-testid="stAppViewContainer"] {
     direction: rtl;
+}
+
+[data-testid="stMarkdownContainer"] {
     text-align: right;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    text-align: right !important;
 }
 </style>
 """, unsafe_allow_html=True)
-st.set_page_config(
-    page_title="RoboServe Solutions",
-    page_icon="🤖",
-    layout="wide"
-)
 
 pages = [
     st.Page("pages/home_page.py", title="🏠 דף הבית ומבוא", default=True),
