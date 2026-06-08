@@ -1,18 +1,7 @@
 # pages/set_cover_page.py
 import streamlit as st
 import pandas as pd
-st.markdown("""
-<style>
-html, body, [class*="css"] {
-    direction: rtl;
-    text-align: right;
-}
 
-h1, h2, h3, h4, h5, h6, p, div, label {
-    text-align: right !important;
-}
-</style>
-""", unsafe_allow_html=True)
 # --- מימוש ישיר של אלגוריתם Set Cover החמדני בתוך הדף למניעת שגיאות ייבוא ---
 
 def greedy_set_cover(restaurant_tables, robot_coverage):
