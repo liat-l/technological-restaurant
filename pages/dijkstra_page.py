@@ -138,5 +138,6 @@ else:
         })
         example_matrix.set_index("קודקוד", inplace=True)
         st.table(example_matrix)
-        st.caption("inf הערה: הערך 
-        מייצג מצב שבו אין חיבור ישיר פתוח בין שני הקודקודים הללו ברשת.")
+        st.caption("""inf הערה: הערך 
+        
+        מייצג מצב שבו אין חיבור ישיר פתוח בין שני הקודקודים הללו ברשת""")
