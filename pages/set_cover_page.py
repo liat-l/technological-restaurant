@@ -49,9 +49,7 @@ def greedy_set_cover(restaurant_tables, robot_coverage):
     return selected_robots
 
 # --- תצוגת הדשבורד השיווקי של Streamlit ---
-st.markdown("""
-<div dir="rtl">
-""", unsafe_allow_html=True)
+
 # כותרת ממותגת ונקייה
 st.title("📍 Robo-Coverage")
 st.subheader("מערכת תכנון הצי ואופטימיזציית כיסוי אזורים בזמן אמת")
@@ -157,3 +155,7 @@ else:
             "שולחנות מכוסים (מופרדים בפסיק)": ["T1, T2, T3", "T3, T4, T5", "T6, T7"]
         })
         st.table(example_df)
+
+st.markdown("""
+</div>
+""", unsafe_allow_html=True)
